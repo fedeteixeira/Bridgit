@@ -1,0 +1,69 @@
+<html>
+<head>
+    <title>Bridgit UDO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        .container{
+            min-width: 900px;
+            min-height: 900px;
+        }
+        .gameCanvas{
+            height: 900px;
+            width: 900px;
+            min-width: 900px;
+            min-height: 900px;
+            border: 0.25rem solid black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center shadow-lg rounded mt-5">
+        <div class="col">
+            <div class="row">
+                <h1 class="text-dark">
+                    Bridgit UDO
+                </h1>
+            </div>
+
+            <div class="row mx-auto w-50">
+                <h2>Game options:</h2>
+                <form action="" onsubmit="event.preventDefault(); createBoard()" class="input-group" >
+                    
+                    <label for="boardSize" class="me-3 my-auto">Board size (x²): </label>
+                    <input type="number" name="boardSize" id="boardSize" min="3" max="9" placeholder="5" value="5" class="form-control ml-3">  
+                
+                    <label for="firstToPlay" class="me-3 ms-3 my-auto">Bot first?: </label>
+                    <input type="checkbox" name="firstToPlay" id="firstToPlay" class="ml-3 my-auto form-check-input">
+                    
+                    
+                    <button type="submit" class="ms-3 btn btn-success">Play</button>
+                </form>
+            </div>
+
+            <div id="app" class="row">
+                <canvas class="mx-auto gameCanvas" id="canvas" width="900px" height="900px"></canvas>
+            </div> 
+
+            <div class="row mt-3">
+                <h2 id="user" class="text-primary">
+                    User Turn 👨‍💻
+                </h2>
+                <h2 id="bot" class="text-danger">
+                    'Bot' Turn 🤖
+                </h2>
+            </div>
+
+            <div class="row mt-3">
+                <div id="userwon" class="alert alert-primary fade show">
+                    <h2>User has won 👨‍💻</h2>
+                </div>
+                <div id="botwon" class="alert alert-danger fade show">
+                    <h2>'Bot' has won 🤖</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- <script src="scripts/test.js"></script> -->
+<script src="scripts/test.js"></script> 
+</html>
