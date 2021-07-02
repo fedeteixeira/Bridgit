@@ -137,6 +137,8 @@ function createBoard(){
         if(invalidForUser.includes(lineIzq)&&invalidForUser.includes(lineDer)){
             return [lineIzq, lineDer]
         }
+
+        return[0,0]
     }
 
     //Convierte un vertice a sus coordenadas ej. vert = 1 -> [0,1]
@@ -463,6 +465,10 @@ function createBoard(){
 
         if (!lineIsAlowed(line)){
             console.log("You can't play here")
+            if(botPlaying) {
+                botTurnMessage.classList.add('d-none');
+                botPlaying = false
+            }
             return
         }
         ctx.strokeStyle = botPlaying ? 'red' : 'blue'; 
