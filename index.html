@@ -35,7 +35,7 @@
                 </h1>
             </div>
 
-            <div class="row mx-auto w-50">
+            <div class="row mx-auto w-50 mb-3">
                 <h2>Game options:</h2>
                 <form action="" onsubmit="event.preventDefault(); createBoard()" class="input-group" >
                     
@@ -45,7 +45,9 @@
                     <label for="firstToPlay" class="me-3 ms-3 my-auto">Bot first?: </label>
                     <input type="checkbox" name="firstToPlay" id="firstToPlay" class="ml-3 my-auto form-check-input">
                     
-                    
+                    <label for="maxIterations" class="me-3 ms-3 my-auto">Max Iterations: </label>
+                    <input type="number" name="maxIterations" id="maxIterations" min="500" max="10000" placeholder="500" value="5000" class="form-control ml-3">  
+
                     <button type="submit" class="ms-3 btn btn-success">Play</button>
                 </form>
             </div>

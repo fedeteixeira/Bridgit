@@ -28,8 +28,11 @@ function createBoard(){
     let onlyLines =[]; //Senala las casillas donde solo pueden haber lineas 
     let availableLines = []; //Senala las casillas con lineas disponibles para ser jugadas
     let boardAsGrid = Array.from(Array(squaresPerLine), () => new Array(squaresPerLine)) //Tablero del juego en array
-    let iteracion = 0
-    let choice
+    
+    let iteracion = 0 // Registra las veces que se ha llamado a la función minimax
+    let maxIteraciones = document.getElementById('maxIterations').value //Cantidad máxima de veces que se puede llamar a la función minimax recursivamente
+    let choice // Registra el último movimiento calculado por la función minimax
+    let globalScore // Registra la última puntuación calculada por la función minimax
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpia el canvas cuando se inicia una nueva partida
 
     //Se vuelven a anadir las clases para desaparecer los elementos por si se hace reinicio
@@ -41,9 +44,6 @@ function createBoard(){
 
     //Bucle que crea los circulos, y agrega los vertices correspondientes a cada lista
     for(let i=0; i<squaresPerLine; i++){
-        ctx.fillStyle = 'green';
-        ctx.fillRect(i*distance,0,squaresSize,boardSize);
-        ctx.fillRect(0,i*distance,boardSize,squaresSize);
         let y = distance*(i+1)/2 + distance*(i)/2
 
         for(let j=0; j<squaresPerLine; j++){
@@ -68,11 +68,6 @@ function createBoard(){
 
 
             if(i%2==j%2){
-                ctx.fillStyle = 'green'
-                ctx.beginPath();
-                let x = distance*(j+1)/2 + distance*(j)/2
-                ctx.arc(x,y,distance/4,0,Math.PI*2,true);
-                ctx.fill();
                 continue
             }
 
@@ -107,14 +102,12 @@ function createBoard(){
     //Funcion que invoca a minimax
     function botPlay(){
         botTurnMessage.classList.remove("d-none")
-        const bestPlayInfo = minimax(boardAsGrid, 'X'); //Se le pasa el tablero actual porque es un metodo recursivo y la marca del bot (X)
+        minimax(boardAsGrid, 'X'); //Se le pasa el tablero actual porque es un metodo recursivo y la marca del bot (X)
         let lineEnds = lineToEnds(choice) //De la linea obtenida por el minimax se obtiene los vertices que producen dicha linea
         let x_start = vertToCoord(lineEnds[0])[1]
         let y_start = vertToCoord(lineEnds[0])[0]
         let x_end = vertToCoord(lineEnds[1])[1] //Tener en cuenta que la forma en la que está hecha la funcion linetoends devuelve los valores al opuesto del sentido comun aqui
         let y_end = vertToCoord(lineEnds[1])[0]
-        console.log(`jugando en el v: ${choice}`)
-        console.log(`jugada: [${lineEnds}]`)
         botPlaying = true
         iteracion = 0
         makeMove(choice || -1, x_start, y_start, x_end, y_end) //Si por alguna razón bestplayinfo no tiene un index se le pasa -1 para que devuelva movimiento invalido y no de error
@@ -357,11 +350,10 @@ function createBoard(){
     //El valor de retorno de esta funcion es muy necesario para el minimax puesto que es la condicion
     //que detiene la recursividad
     function checkWin2d(playerisBot){
-        let flag = 0
         if (isPath(prepareBoard(playerisBot), squaresPerLine)){
-            flag = playerisBot?  1 : -1
+            return playerisBot?  1 : -1
         }
-        return flag
+        return 0
     }
 
     // Step 6 - Create the minimax algorithm:
@@ -373,8 +365,9 @@ function createBoard(){
         let humanMark = 'O'
         let aiMark = 'X'
 
+        //Utilizado para no crear una recursión muy grande
         iteracion++
-        if(iteracion>10000) return {score: 0, index: choice};
+        if(iteracion>maxIteraciones) return {score: globalScore, index: choice};
         
         // Step 9 - Check if there is a terminal state:
         if (checkWin2d(false) === -1) {
@@ -394,7 +387,6 @@ function createBoard(){
             // Step 11 - Save the index number of the cell this for-loop is currently processing:
             let currInx = vertToCoord(availCellsIndexes[i])
             currentTestPlayInfo.index = currBdSt[currInx[0]][currInx[1]];
-            choice = currBdSt[currInx[0]][currInx[1]];
             
             // Step 11 - Place the current player’s mark on the cell for-loop is currently processing:
             currBdSt[currInx[0]][currInx[1]] = currMark;
@@ -432,6 +424,9 @@ function createBoard(){
                     bestTestPlay = i;
                 }
             }
+            globalScore = allTestPlayInfos[bestTestPlay].score;
+            choice = allTestPlayInfos[bestTestPlay].index;
+            
         } else {
             let bestScore = Infinity;
             for (let i = 0; i < allTestPlayInfos.length; i++) {
@@ -524,7 +519,7 @@ function createBoard(){
     }
 
     //Función para hacer un movimiento como jugador
-    function drawinposition(event){
+    function humanPlay(event){
         if(someoneWon) return
         const rect = canvas.getBoundingClientRect()
         console.log(`clicked in: ${event.clientX-rect.left} , ${event.clientY-rect.top}`)
@@ -582,5 +577,5 @@ function createBoard(){
         }
         started=!started;
     }
-    document.getElementById("canvas").addEventListener("click",(e)=>{drawinposition(e)});
+    document.getElementById("canvas").addEventListener("click",(e)=>{humanPlay(e)});
 }
